@@ -1,29 +1,38 @@
 package com.example.cis436_project2
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class GameActivity : AppCompatActivity() {
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_game)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
-        val gameMode = intent.getStringExtra("gameMode")
+        // Get game mode from Intent
+        val isAI = intent?.getStringExtra("gameMode") == "ai"
 
-        if (gameMode == "friend") {
-            // start the game with player 1 and player 2
-        }
-        else if (gameMode == "ai") {
-            // start the game with player 1 and AI
+        // Load TopFragment
+        val topFragment = TopFragment()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.topFragmentContainer, topFragment)
+            .commitNow()
+
+        // Load BottomFragment
+        val bottomFragment = BottomFragment()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.bottomFragmentContainer, bottomFragment)
+            .commitNow()
+
+        // Update UI based on game mode
+        topFragment.view?.post {
+            topFragment.setGameMode(isAI)
         }
     }
 }
